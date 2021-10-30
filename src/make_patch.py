@@ -142,7 +142,7 @@ def make_patch(patch_save, slide, masks, name, level):
             for i in range(args.max_patches):
                 x = coord_x[num][i]*(4**(level)) - (args.psize//2)*(4**(level))
                 y = coord_y[num][i]*(4**(level)) - (args.psize//2)*(4**(level))
-                img = np.array(slide.read_region((x,y), level, args.psize))
+                img = np.array(slide.read_region((x,y), level, (args.psize, args.psize)))
                 img = img[:,:,:3]
                 img = img.astype(np.uint8)
                 img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
@@ -172,7 +172,7 @@ def make_patch(patch_save, slide, masks, name, level):
             for i in range(len(idx)):
                 x = coord_x[num][i]*(4**(level)) - (args.psize//2)*(4**(level))
                 y = coord_y[num][i]*(4**(level)) - (args.psize//2)*(4**(level))
-                img = np.array(slide.read_region((x,y), level, args.psize))
+                img = np.array(slide.read_region((x,y), level, (args.psize, args.psize)))
                 img = img[:,:,:3]
                 img = img.astype(np.uint8)
                 img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
