@@ -101,8 +101,8 @@ def sliding_window_extract(patch_save, paths, label, level):
         slide = openslide.OpenSlide(str(slide_path)) 
         mask = xml2mask(xml_path, slide, level)
         
-        py = (args.psize[0]//2)
-        px = (args.psize[1]//2)
+        py = (args.psize//2)
+        px = (args.psize//2)
         
         # x,y
         m = np.where(mask==target,1,0)
