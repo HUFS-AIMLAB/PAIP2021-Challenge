@@ -13,6 +13,7 @@ from skimage import io
 import matplotlib.pyplot as plt
 from PIL import Image
 from pathlib import Path
+import scipy.ndimage
 import argparse
 
 import openslide
@@ -138,6 +139,7 @@ def sliding_window_extract(patch_save, paths, label, level):
                 ## mask
                 mask_ = mask[y-py:y+py,x-px:x+px,np.newaxis]
                 mask_ = np.where(mask_==target, 1, 0)
+                mask_ = scipy.ndimage.morphology.binary_dilation(mask_)
                 mask_ = mask_.astype(np.uint8)
 
                 num = format(idx, '07')
