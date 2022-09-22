@@ -222,8 +222,8 @@ class Preprocessor:
         px = args.psize // 2
 
         m = np.where(mask == target, 1, 0)
-        if m == []:
-            continue
+        if len(m) == 0:
+            return
         m = m.astype(np.uint8)
         num_labels, labels = cv2.connectedComponents(m)
 
