@@ -17,6 +17,7 @@ RUN dpkg -i cuda-keyring_1.0-1_all.deb
 
 RUN apt-get install -y openslide-tools
 RUN apt-get install -y python-openslide
+RUN apt-get install ffmpeg libsm6 libxext6  -y
 
 RUN pip install openslide-python && \
     pip install jupyter notebook && \
