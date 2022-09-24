@@ -27,6 +27,7 @@ RUN pip install openslide-python && \
     pip install tqdm && \
     pip install pillow && \
     pip install opencv-python && \
-    pip install timm 
+    pip install timm  && \
+    pip install scikit-image
 
 EXPOSE 8888
