@@ -303,6 +303,7 @@ class Preprocessor:
 
 
 def main():
+    global args
     wsi_dir = Path(args.svs_load_dir)
     xml_dir = Path(args.xml_load_dir)
     patch_save = Path(args.save_dir)
@@ -329,7 +330,6 @@ def main():
 
 
 if __name__ == "__main__":
-    global args
     args = parse_args()
     random_seed(args.seed)
     main()
