@@ -25,11 +25,12 @@ RUN pip install openslide-python && \
     pip install jupyter notebook && \
     pip install matplotlib && \
     pip install seaborn && \
-    pip install optuna && \
+    pip install timm  && \
+    pip install segmentation-models-pytorch && \
+    pip install albumentations && \
     pip install tqdm && \
     pip install pillow && \
     pip install opencv-python && \
-    pip install timm  && \
     pip install scikit-image
 
 EXPOSE 8888
