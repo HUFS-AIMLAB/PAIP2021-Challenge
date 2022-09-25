@@ -180,24 +180,26 @@ class Preprocessor:
                 ]
                 mask_ = mask_.astype(np.uint8)
 
-                num2 = format(cnt, "07")
+                num = format(cnt, "07")
                 cnt += 1
                 ipath = Path(
                     os.path.join(
                         self.patch_save,
                         name,
-                        str(level),
+                        args.mode, 
+                        "level_" + str(level),
                         f"{label}/img",
-                        f"{name}_{num2}.png",
+                        f"{name}_{num}.png",
                     )
                 )
                 mpath = Path(
                     os.path.join(
                         self.patch_save,
                         name,
-                        str(level),
+                        args.mode,
+                        "level_" + str(level),
                         f"{label}/mask",
-                        f"{name}_{num2}.png",
+                        f"{name}_{num}.png",
                     )
                 )
 
@@ -273,7 +275,8 @@ class Preprocessor:
                     os.path.join(
                         self.patch_save,
                         name,
-                        str(level),
+                        args.mode,
+                        "level_" + str(level),
                         label,
                         "img_sw",
                         f"{name}_{num}.png",
@@ -283,7 +286,8 @@ class Preprocessor:
                     os.path.join(
                         self.patch_save,
                         name,
-                        str(level),
+                        args.mode,
+                        "level_" + str(level),
                         label,
                         "mask_sw",
                         f"{name}_{num}.png",
