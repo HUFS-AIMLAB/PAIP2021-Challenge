@@ -1,18 +1,10 @@
 import os
-import glob
-import re
 import time
-import copy
 import random
-import math
-import sys
 
 import cv2
 import numpy as np
 from tqdm import tqdm
-from skimage import io
-import matplotlib.pyplot as plt
-from PIL import Image
 from pathlib import Path
 import scipy.ndimage
 import argparse
@@ -186,7 +178,7 @@ class Preprocessor:
                     os.path.join(
                         self.patch_save,
                         name,
-                        args.mode, 
+                        args.mode,
                         "level_" + str(level),
                         f"{label}/img",
                         f"{name}_{num}.png",
