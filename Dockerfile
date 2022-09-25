@@ -1,5 +1,7 @@
 FROM pytorch/pytorch:1.10.0-cuda11.3-cudnn8-devel
 
+ADD . .
+
 RUN rm /etc/apt/sources.list.d/cuda.list
 RUN rm /etc/apt/sources.list.d/nvidia-ml.list
 
