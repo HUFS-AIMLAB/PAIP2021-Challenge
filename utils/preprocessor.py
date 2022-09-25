@@ -131,7 +131,7 @@ class Preprocessor:
 
     def make_patch(self, slide, mask, name, level):
         global args
-        max_x, max_y = self.slide.level_dimensions[self.level]
+        max_x, max_y = slide.level_dimensions[level]
 
         idx_nerve, y_nerve, x_nerve = self.shuffle_coord(mask, CLASS_NERVE)
         idx_pni, y_pni, x_pni = self.shuffle_coord(mask, CLASS_PNI)
