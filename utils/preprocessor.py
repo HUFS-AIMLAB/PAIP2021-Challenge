@@ -49,7 +49,7 @@ def random_seed(seed):
 
 class Preprocessor:
     def __init__(self, patch_save):
-        self.path_save = patch_save
+        self.patch_save = patch_save
 
     def xml2mask(self, xml_fn, slide, level):
         """
