@@ -148,6 +148,7 @@ class Preprocessor:
             cnt = 0
             range_max = args.max_patches if len(idx) > args.max_patches else len(idx)
             for i in range(range_max):
+                print(num, i)
                 x = coord_x[num][i] * (4 ** (level)) - (args.psize // 2) * (
                     4 ** (level)
                 )
