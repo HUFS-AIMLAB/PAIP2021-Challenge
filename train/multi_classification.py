@@ -1,21 +1,24 @@
-import torch
-import torch.nn.functional as F
-import torch.optim as optim
-from torch.utils.data import Dataset, DataLoader
-
+import os
+import sys
 import time
 import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 import random
-import os
 from tqdm import tqdm
 from sklearn.model_selection import train_test_split
+
+import torch
+import torch.nn.functional as F
+import torch.optim as optim
+from torch.utils.data import Dataset, DataLoader
 
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 
-from ..model.model import EfficientNetB0
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+
+from model.model import EfficientNetB0
 
 def parse_args():
     parser = argparse.ArgumentParser(description = "Train Model Organ Specific for Probability Map")
