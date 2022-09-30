@@ -15,7 +15,7 @@ from sklearn.model_selection import train_test_split
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 
-from model.model import EfficientNetB0
+from ..model.model import EfficientNetB0
 
 def parse_args():
     parser = argparse.ArgumentParser(description = "Train Model Organ Specific for Probability Map")
