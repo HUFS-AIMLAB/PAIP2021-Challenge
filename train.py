@@ -48,7 +48,7 @@ def main():
     args = parse_args()
     random_seed(args.seed, True)
     if args.use_gpu:
-        device = torch.devcie("cuda") if torch.cuda.is_available() else torch.device("cpu")
+        device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
     else:
         device = torch.device('cpu')
 
