@@ -17,7 +17,7 @@ class EfficientNetB0(nn.Module):
 class UNetEfficientNet(nn.Module):
     def __init__(self, num_classes, encoder_path):
         super(UNetEfficientNet, self).__init__()
-        self.model = smp.Unet(encoder_name = "timm-efficientnet-b0", encoder_weights = "noisy-student",in_channels = 3, classes = num_classes)
+        self.model = smp.Unet(encoder_name = "timm-efficientnet-b0", encoder_weights = "noisy-student", in_channels = 3, classes = num_classes)
         self.model.encoder.load_state_dict(torch.load(encoder_path))
 
     
