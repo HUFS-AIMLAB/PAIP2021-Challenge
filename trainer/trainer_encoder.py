@@ -50,8 +50,6 @@ class MyDataset(Dataset):
         label = torch.tensor(self.path_list[index]['label']).type(torch.uint8)
 
         if self.transform:
-            print(type(image))
-            print(image.shape)
             augmented = self.transform(image = image)
             image = augmented['image']
 
@@ -125,9 +123,9 @@ class EncoderTrainer():
         
         albu_aug = strong_aug(p = 0.8)
         train_aug = A.Compose([
-            # albu_aug,
+            albu_aug,
             A.Normalize(),
-            ToTensorV2
+            ToTensorV2(),
         ])
         valid_aug = A.Compose([
             A.Normalize(),
