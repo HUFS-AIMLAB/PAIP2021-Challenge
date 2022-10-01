@@ -136,7 +136,7 @@ class Trainer():
         validset = MyDataset(valid_list, transform = valid_aug)
 
         train_loader = DataLoader(
-            trainset,batch_size = self,args.batch_size, shuffle = True, 
+            trainset,batch_size = self.args.batch_size, shuffle = True, 
             num_workers = self.args.num_workers, pin_memory = True)
         valid_loader = DataLoader(
             validset,batch_size = self.args.batch_size, shuffle = False, 

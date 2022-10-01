@@ -28,6 +28,7 @@ RUN pip install openslide-python && \
     pip install timm  && \
     pip install segmentation-models-pytorch && \
     pip install albumentations && \
+    pip install monai && \
     pip install tqdm && \
     pip install pillow && \
     pip install opencv-python && \
