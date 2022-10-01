@@ -118,7 +118,7 @@ class UNetTrainer():
                 # pred = post_transform(image = pred)
                 pred = activate(pred)
                 pred = discrete(pred)
-                # print('\n', len(dice_metric(y_pred = pred, y = label)))
+                print("\n\n\n", dice_metric(y_pred = pred, y = label).shape)
                 print('\n', dice_metric(y_pred = pred, y = label))
                 dice_value = dice_metric(y_pred = pred, y = label)
                 valid_loss.append(loss.item())
