@@ -89,7 +89,7 @@ class UNetTrainer():
                         continue
                     case = {
                         'image' : os.path.join(root_dir, patient, 'sw', f"level_{level_dim}", 'pni', "img_sw", image),
-                        'label' : os.path.join(root_dir, patient, 'sw', f"level_{level_dim}", 'pni', "mask_sw", image)
+                        'mask' : os.path.join(root_dir, patient, 'sw', f"level_{level_dim}", 'pni', "mask_sw", image)
                     }
                     data_list.append(case)
                 
