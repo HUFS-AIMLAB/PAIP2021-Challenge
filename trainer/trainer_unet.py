@@ -119,7 +119,7 @@ class UNetTrainer():
                 pred = discrete(pred)
                 dice_value = dice_metric(y_pred = pred, y = label)
                 valid_loss.append(loss.item())
-                valid_dice.append(dice_value.squeeze().mean())
+                valid_dice.append(dice_value.squeeze().mean().detach().cpu().numpy())
         valid_loss = np.average(valid_loss).item()
         valid_dice = np.average(valid_dice).item()
         return valid_loss, valid_dice
