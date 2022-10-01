@@ -109,7 +109,7 @@ class UNetTrainer():
         with torch.no_grad():
             for item in tqdm(valid_iterator):
                 iter_count += 1
-                image, label = item['image'].to(self.device), item['label'].type(torch.long).to(self.device)
+                image, label = item['image'].to(self.device), item['mask'].type(torch.long).to(self.device)
                 pred = inferer(inputs = image, network = self.model)
                 loss = self.criterion(pred, label)
                 valid_iterator.set_description(
@@ -171,7 +171,7 @@ class UNetTrainer():
             for item in tqdm(train_iterator):
                 iter_count += 1
                 self.optimizer.zero_grad()
-                image, label = item['image'].to(self.device), item['label'].type(torch.long).to(self.device)
+                image, label = item['image'].to(self.device), item['mask'].type(torch.long).to(self.device)
                 pred = self.model(image)
                 loss = self.criterion(pred, label)
                 loss.backward()
