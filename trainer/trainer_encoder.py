@@ -61,7 +61,7 @@ class MyDataset(Dataset):
         return len(self.path_list)
 
 
-class Trainer():
+class EncoderTrainer():
     def __init__(self, args, model, optimizer, criterion, device):
         self.device = device
         self.model = model

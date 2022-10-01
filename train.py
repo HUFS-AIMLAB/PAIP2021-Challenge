@@ -11,7 +11,7 @@ import argparse
 
 import monai
 
-from trainer.trainer_encoder import EncoderTrainer, ProbmapTrainer
+from trainer.trainer_encoder import EncoderTrainer
 from trainer.trainer_unet import UNetTrainer
 from model.model import EfficientNetB0, UNetEfficientNet
 
@@ -51,7 +51,7 @@ def main():
         device = torch.devcie("cuda") if torch.cuda.is_available() else torch.device("cpu")
     else:
         device = torch.device('cpu')
-        
+
     if args.train_mode == 'clf':
         model = EfficientNetB0(pre_trained = True, num_classes = 4)
         criterion = torch.nn.CrossEntropyLoss()
@@ -63,10 +63,7 @@ def main():
     optimizer = torch.optim.Adam(model.parameters(), lr = args.lr)
 
     if args.train_mode == 'clf':
-        if args.train_type == 'encoder':
-            trainer = EncoderTrainer(args, model, optimizer, criterion, device)
-        else:
-            trainer = ProbmapTrainer(args, model, optimizer, criterion, device)
+        trainer = EncoderTrainer(args, model, optimizer, criterion, device)
     elif args.train_mode == 'seg':
         trainer = UNetTrainer(args, model, optimizer, criterion, device)
 
