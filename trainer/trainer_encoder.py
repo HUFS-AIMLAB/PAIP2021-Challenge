@@ -39,7 +39,7 @@ def strong_aug(p=0.5):
 
 
 class MyDataset(Dataset):
-    def __init__(self, path_list, normalization, transform = None):
+    def __init__(self, path_list, transform = None):
         self.path_list = path_list
         self.transform = transform
 
