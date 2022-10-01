@@ -93,7 +93,7 @@ class Trainer():
                 
         return data_list
 
-    def validation(self, valid_loader):
+    def validation(self, valid_loader, length):
         self.model.eval()
         valid_iterator = tqdm(
         valid_loader, desc="VALIDATION (X / X Steps) (loss=X.X)", dynamic_ncols=True
@@ -113,7 +113,7 @@ class Trainer():
             correct += (pred.argmax(dim = 1) == label).sum().cpu()
             valid_loss.append(loss.item())
         valid_loss = np.average(valid_loss).item()
-        valid_acc = correct / np.float32(max_iterations)
+        valid_acc = correct / np.float32(length)
         return valid_loss, valid_acc
 
     def training(self):
@@ -171,8 +171,8 @@ class Trainer():
                 train_loss.append(loss.item())
                 
             train_loss = np.average(train_loss).item()
-            train_acc = correct / np.float32(max_iterations)
-            valid_loss, valid_acc = self.validation(valid_loader)
+            train_acc = correct / np.float32(len(trainset))
+            valid_loss, valid_acc = self.validation(valid_loader, len(validset))
 
             print(f"Epoch: {epoch} | Train Loss: {train_loss:.3f}, Train Acc: {train_acc:.3f}")
             print(f"Epoch: {epoch} | Valid Loss: {valid_loss:.3f}, Valid Acc: {valid_acc:.3f}")

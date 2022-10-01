@@ -6,6 +6,8 @@ from tqdm import tqdm
 import torch
 import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
+from sklearn.model_selection import train_test_split
+import monai
 
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
@@ -42,6 +44,7 @@ class MyDataset(Dataset):
         self.path_list = path_list
         self.transform = transform
 
+
     def __getitem__(self, index):
         image = cv2.imread(self.path_list[index]['image'])
         mask = cv2.imread(self.path_list[index]['mask'], cv2.IMREAD_GRAYSCALE)
@@ -52,6 +55,7 @@ class MyDataset(Dataset):
             mask = augmented['mask'][np.newaxis, :, :]
 
         return image, mask
+
 
     def __len__(self):
         return len(self.path_list)
@@ -65,11 +69,12 @@ class Trainer():
         self.criterion = criterion
         self.args = args
     
+
     def path_list(self):
         data_list = list()
         root_dir = self.args.root_dir
         level_dim = str(self.args.level)
-        
+
         for patient in sorted(os.listdir(os.path.join(root_dir))):
             if patient.split('_')[0] not in ['Col', 'Pan', 'Pros']:
                 continue
@@ -77,40 +82,45 @@ class Trainer():
                 continue
             for label in sorted(os.listdir(os.path.join(root_dir, patient, 'sw', f" level_{level_dim}"))):
                 if 'class' in label:
-                    for image in sorted(os.listdir(os.path.join(root_dir, patient, 'sw', f" level_{level_dim}", label, "img"))):
+                    for image in sorted(os.listdir(os.path.join(root_dir, patient, 'sw', f" level_{level_dim}", label, "img_sw"))):
                         if image.split('.')[-1] != 'png':
                             continue
                         else:
                             case = {
-                                'image' : os.path.join(root_dir, patient, 'sw', f" level_{level_dim}", label, "img", image),
-                                'label' : os.path.join(root_dir, patient, 'sw', f" level_{level_dim}", label, "mask", image)
+                                'image' : os.path.join(root_dir, patient, 'sw', f" level_{level_dim}", label, "img_sw", image),
+                                'label' : os.path.join(root_dir, patient, 'sw', f" level_{level_dim}", label, "mask_sw", image)
                             }
                             data_list.append(case)
                 
         return data_list
 
-    def validation(self, valid_loader):
+
+    def validation(self, valid_loader, dice_metric, post_transform, inferer):
         self.model.eval()
         valid_iterator = tqdm(
         valid_loader, desc="VALIDATION (X / X Steps) (loss=X.X)", dynamic_ncols=True
         )
         valid_loss = []
+        valid_dice = []
         iter_count = 0
         correct = 0
         max_iterations = len(valid_loader)
         for item in tqdm(valid_iterator):
             iter_count += 1
             image, label = item['image'].to(self.device), item['label'].type(torch.long).to(self.device)
-            pred = F.softmax(self.model(image), dim = 1)
+            pred = inferer(inputs = image, network = self.model)
             loss = self.criterion(pred, label)
             valid_iterator.set_description(
                 "Training (%d / %d Steps) (loss=%2.5f)" % (iter_count, max_iterations, loss.item())
             )
-            correct += (pred.argmax(dim = 1) == label).sum().cpu()
+            pred = post_transform(pred)
+            dice_value, _ = dice_metric(y_pred = pred, y = label)
             valid_loss.append(loss.item())
+            valid_dice.append(dice_value.item())
         valid_loss = np.average(valid_loss).item()
-        valid_acc = correct / np.float32(max_iterations)
-        return valid_loss, valid_acc
+        valid_dice = np.average(valid_dice).item()
+        return valid_loss, valid_dice
+
 
     def training(self):
         data_list = self.path_list()
@@ -132,13 +142,17 @@ class Trainer():
         validset = MyDataset(valid_list, transform = valid_aug)
 
         train_loader = DataLoader(
-            trainset,batch_size = self,args.batch_size, shuffle = True, 
+            trainset,batch_size = self.args.batch_size, shuffle = True, 
             num_workers = self.args.num_workers, pin_memory = True)
         valid_loader = DataLoader(
             validset,batch_size = self.args.batch_size, shuffle = False, 
             num_workers = self.args.num_workers, pin_memory = True)
 
         self.model = self.model.to(self.device)
+
+        dice_metric = monai.metrics.DiceMetric(include_background = True, reduction = 'mean')
+        post_transform = A.Compose([monai.trnasforms.Activations(sigmoid = True), monai.transforms.AsDiscrete(threshold_values = True)])
+        inferer = monai.inferers.SimpleInferer()
         
         print(f"[INFO] training start")
         train_iterator = tqdm(
@@ -156,22 +170,20 @@ class Trainer():
                 iter_count += 1
                 self.optimizer.zero_grad()
                 image, label = item['image'].to(self.device), item['label'].type(torch.long).to(self.device)
-                pred = F.softmax(self.model(image), dim = 1)
+                pred = self.model(image)
                 loss = self.criterion(pred, label)
                 loss.backward()
                 self.optimizer.step()
                 train_iterator.set_description(
                     "Training (%d / %d Steps) (loss=%2.5f)" % (iter_count, max_iterations, loss.item())
                 )
-                correct += (pred.argmax(dim = 1) == label).sum().cpu()
                 train_loss.append(loss.item())
                 
             train_loss = np.average(train_loss).item()
-            train_acc = correct / np.float32(max_iterations)
-            valid_loss, valid_acc = self.validation(valid_loader)
+            valid_loss, valid_dice = self.validation(valid_loader, dice_metric, post_transform, inferer)
 
-            print(f"Epoch: {epoch} | Train Loss: {train_loss:.3f}, Train Acc: {train_acc:.3f}")
-            print(f"Epoch: {epoch} | Valid Loss: {valid_loss:.3f}, Valid Acc: {valid_acc:.3f}")
+            print(f"Epoch: {epoch} | Train Loss: {train_loss:.3f}")
+            print(f"Epoch: {epoch} | Valid Loss: {valid_loss:.3f}, Valid Dice Score: {valid_dice:.3f}")
             
             early_stopping(valid_loss, self.model)
 
