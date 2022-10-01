@@ -13,8 +13,8 @@ import timm
 import monai
 import segmentation_models_pytorch as smp
 
-from trainer.trainer_encoder import EncoderTrainer
-from trainer.trainer_unet import UNetTrainer
+from trainer.cnn_learner import EncoderTrainer
+from trainer.unet_learner import UNetTrainer
 from model.model import EfficientNetB0, UNetEfficientNet
 
 
