@@ -169,10 +169,9 @@ class UNetTrainer():
             correct = 0
             max_iterations = len(train_loader)
             for item in tqdm(train_iterator):
-                print(item)
                 iter_count += 1
                 self.optimizer.zero_grad()
-                image, label = item['image'].to(self.device), item['mask'].type(torch.long).to(self.device)
+                image, label = item[0].to(self.device), item[1].type(torch.long).to(self.device)
                 pred = self.model(image)
                 loss = self.criterion(pred, label)
                 loss.backward()
