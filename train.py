@@ -9,7 +9,10 @@ import random
 import numpy as np
 import argparse
 
-from trainer import EncoderTrainer, ProbmapTrainer
+import monai
+
+from trainer.trainer_encoder import EncoderTrainer, ProbmapTrainer
+from trainer.trainer_unet import UNetTrainer
 from model.model import EfficientNetB0, UNetEfficientNet
 
 
@@ -28,6 +31,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description = "Train Model Organ Specific for Probability Map")
     parser.add_argument('--root_dir', type = str, help = "Patch(Random Extract) Directory")
     parser.add_argument('--model_dir', type = str, help = "save model directory")
+    parser.add_argument('--train_mode', type = str, help = "clf: classification, seg: segmentation")
     parser.add_argument('--train_type', type = str, help = "encoder, [for probmap]: col, pan, pros")
 
     parser.add_argument('--lr', type = float, default = 1e-3)
@@ -47,17 +51,25 @@ def main():
         device = torch.devcie("cuda") if torch.cuda.is_available() else torch.device("cpu")
     else:
         device = torch.device('cpu')
-    
-    model = EfficientNetB0(pre_trained = True, num_classes = 4)
+        
+    if args.train_mode == 'clf':
+        model = EfficientNetB0(pre_trained = True, num_classes = 4)
+        criterion = torch.nn.CrossEntropyLoss()
+    elif args.train_mode == 'seg':
+        model = UNetEfficientNet(num_classes = 1, encoder_path = os.path.join(args.model_dir, 'clf/encoder', f"level_{args.level}/checkpoint.pt"))
+        criterion = monai.losses.DiceLoss(sigmoid = True)
     print(model)
     
     optimizer = torch.optim.Adam(model.parameters(), lr = args.lr)
-    criterion = torch.nn.CrossEntropyLoss()
 
-    if args.train_type == 'encoder':
-        trainer = EncoderTrainer(args, model, optimizer, criterion, device)
-    else:
-        trainer = ProbmapTrainer(args, model, optimizer, criterion, device)
+    if args.train_mode == 'clf':
+        if args.train_type == 'encoder':
+            trainer = EncoderTrainer(args, model, optimizer, criterion, device)
+        else:
+            trainer = ProbmapTrainer(args, model, optimizer, criterion, device)
+    elif args.train_mode == 'seg':
+        trainer = UNetTrainer(args, model, optimizer, criterion, device)
+
 
     trainer.training()
 

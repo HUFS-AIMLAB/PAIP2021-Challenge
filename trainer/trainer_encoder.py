@@ -1,13 +1,11 @@
 import os
 import numpy as np
 from PIL import Image
-import matplotlib.pyplot as plt
 from tqdm import tqdm
 from sklearn.model_selection import train_test_split
 
 import torch
 import torch.nn.functional as F
-import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 
 import albumentations as A
@@ -63,7 +61,7 @@ class MyDataset(Dataset):
         return len(self.path_list)
 
 
-class EncoderTrainer():
+class Trainer():
     def __init__(self, args, model, optimizer, criterion, device):
         self.device = device
         self.model = model
@@ -174,10 +172,13 @@ class EncoderTrainer():
                 
             train_loss = np.average(train_loss).item()
             train_acc = correct / np.float32(max_iterations)
-            print(f"Epoch: {epoch} | Train Loss: {train_loss:.3f}, Train Acc: {train_acc:.3f}")
             valid_loss, valid_acc = self.validation(valid_loader)
+
+            print(f"Epoch: {epoch} | Train Loss: {train_loss:.3f}, Train Acc: {train_acc:.3f}")
             print(f"Epoch: {epoch} | Valid Loss: {valid_loss:.3f}, Valid Acc: {valid_acc:.3f}")
+            
             early_stopping(valid_loss, self.model)
+
             if early_stopping.early_stop:
                 print("Early stopping")
                 break
