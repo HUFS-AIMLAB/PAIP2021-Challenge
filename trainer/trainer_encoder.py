@@ -143,7 +143,7 @@ class EncoderTrainer():
             num_workers = self.args.num_workers, pin_memory = True)
 
         self.model = self.model.to(self.device)
-        
+        one_batch = next(iter(train_loader))
         print(f"[INFO] training start")
         train_iterator = tqdm(
         train_loader, desc="Training (X / X Steps) (loss=X.X)", dynamic_ncols=True

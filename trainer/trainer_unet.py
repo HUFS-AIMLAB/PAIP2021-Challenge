@@ -131,7 +131,7 @@ class UNetTrainer():
         train_aug = A.Compose([
             albu_aug,
             A.Normalize(),
-            ToTensorV2
+            ToTensorV2(),
         ])
         valid_aug = A.Compose([
             A.Normalize(),
