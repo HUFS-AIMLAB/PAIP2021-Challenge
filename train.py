@@ -41,6 +41,8 @@ def parse_args():
     parser.add_argument('--level', type = int, help = "level 0 : 20X, level 1 : 5X")
     parser.add_argument('--seed', type = int, default = 42)
     parser.add_argument('--use_gpu', type = bool, default = True)
+
+    parser.add_argument('--patience', type = int, default = 3, help = "Early Stop patience")
     return parser.parse_args()
 
 
