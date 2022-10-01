@@ -182,7 +182,7 @@ class EncoderTrainer():
             
             early_stopping(valid_loss, self.model)
             from pathlib import Path
-            ppath = Path(os.path.join(self.args.model_dir, self.args.train_mode, self.args.train_type, f"level_{self.args.level}", "checkpoint.pt"))
+            ppath = Path(os.path.join(self.args.model_dir, self.args.train_mode, self.args.train_type, f"level_{self.args.level}", "checkpoint_l.pt"))
             torch.save(self.model.state_dict(), str(ppath))
             
             if early_stopping.early_stop:
