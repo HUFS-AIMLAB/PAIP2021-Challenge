@@ -79,14 +79,14 @@ class EncoderTrainer():
                 continue
             if self.args.train_type != 'all' and patient.split('_')[0] != self.args.train_type.title():
                 continue
-            for label in sorted(os.listdir(os.path.join(root_dir, patient, 'random', f" level_{level_dim}"))):
+            for label in sorted(os.listdir(os.path.join(root_dir, patient, 'random', f"level_{level_dim}"))):
                 if 'class' in label:
-                    for image in sorted(os.listdir(os.path.join(root_dir, patient, 'random', f" level_{level_dim}", label, "img"))):
+                    for image in sorted(os.listdir(os.path.join(root_dir, patient, 'random', f"level_{level_dim}", label, "img"))):
                         if image.split('.')[-1] != 'png':
                             continue
                         else:
                             case = {
-                                'image' : os.path.join(root_dir, patient, 'random', f" level_{level_dim}", label, "img", image),
+                                'image' : os.path.join(root_dir, patient, 'random', f"level_{level_dim}", label, "img", image),
                                 'label' : label_value[label]
                             }
                             data_list.append(case)

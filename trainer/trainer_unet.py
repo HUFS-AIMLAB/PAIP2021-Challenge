@@ -80,15 +80,15 @@ class UNetTrainer():
                 continue
             if self.args.train_type != 'all' and patient.split('_')[0] != self.args.train_type.title():
                 continue
-            for label in sorted(os.listdir(os.path.join(root_dir, patient, 'sw', f" level_{level_dim}"))):
+            for label in sorted(os.listdir(os.path.join(root_dir, patient, 'sw', f"level_{level_dim}"))):
                 if 'class' in label:
-                    for image in sorted(os.listdir(os.path.join(root_dir, patient, 'sw', f" level_{level_dim}", label, "img_sw"))):
+                    for image in sorted(os.listdir(os.path.join(root_dir, patient, 'sw', f"level_{level_dim}", label, "img_sw"))):
                         if image.split('.')[-1] != 'png':
                             continue
                         else:
                             case = {
-                                'image' : os.path.join(root_dir, patient, 'sw', f" level_{level_dim}", label, "img_sw", image),
-                                'label' : os.path.join(root_dir, patient, 'sw', f" level_{level_dim}", label, "mask_sw", image)
+                                'image' : os.path.join(root_dir, patient, 'sw', f"level_{level_dim}", label, "img_sw", image),
+                                'label' : os.path.join(root_dir, patient, 'sw', f"level_{level_dim}", label, "mask_sw", image)
                             }
                             data_list.append(case)
                 
