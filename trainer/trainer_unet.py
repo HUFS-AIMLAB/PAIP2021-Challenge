@@ -153,7 +153,7 @@ class UNetTrainer():
         self.model = self.model.to(self.device)
 
         dice_metric = monai.metrics.DiceMetric(include_background = True, reduction = 'mean')
-        post_transform = A.Compose([monai.transforms.Activations(sigmoid = True), monai.transforms.AsDiscrete(threshold = 0.5)])
+        post_transform = monai.transforms.Compose([monai.transforms.Activations(sigmoid = True), monai.transforms.AsDiscrete(threshold = 0.5)])
         inferer = monai.inferers.SimpleInferer()
         
         print(f"[INFO] training start")
