@@ -50,6 +50,9 @@ class MyDataset(Dataset):
         label = torch.tensor(self.path_list[index]['label']).type(torch.uint8)
 
         if self.transform:
+            print(self.transform)
+            print(type(image))
+            print(image.shape)
             augmented = self.transform(image = image)
             image = augmented['image']
 
