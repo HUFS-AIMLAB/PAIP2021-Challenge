@@ -27,6 +27,18 @@ def random_seed(seed_value, use_cuda):
         torch.backends.cudnn.deterministic = True  #needed\n
         torch.backends.cudnn.benchmark = False
 
+
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ['yes', 'true', 't', 'y', '1']:
+        return True
+    elif v.lower() in ['no', 'false', 'f', 'n', '0']:
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
+
 def parse_args():
     parser = argparse.ArgumentParser(description = "Train Model Organ Specific for Probability Map")
     parser.add_argument('--root_dir', type = str, help = "Patch(Random Extract) Directory")
@@ -40,10 +52,10 @@ def parse_args():
     parser.add_argument('--num_workers', type = int, default = 4)
     parser.add_argument('--level', type = int, help = "level 0 : 20X, level 1 : 5X")
     parser.add_argument('--seed', type = int, default = 42)
-    parser.add_argument('--use_gpu', type = bool, default = True)
+    parser.add_argument('--use_gpu', type = str2bool, default = True)
 
     parser.add_argument('--patience', type = int, default = 3, help = "Early Stop patience")
-    parser.add_argument('--random_sampling', type = bool, default = True)
+    parser.add_argument('--random_sampling', type = str2bool, default = True)
     return parser.parse_args()
 
 
