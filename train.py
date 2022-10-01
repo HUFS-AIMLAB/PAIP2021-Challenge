@@ -36,7 +36,7 @@ def parse_args():
 
     parser.add_argument('--lr', type = float, default = 1e-3)
     parser.add_argument('--batch_size', type = int, default = 64)
-    parser.add_argument('--num_epochs', type = int, default = 100)
+    parser.add_argument('--train_epochs', type = int, default = 100)
     parser.add_argument('--num_workers', type = int, default = 4)
     parser.add_argument('--level', type = int, help = "level 0 : 20X, level 1 : 5X")
     parser.add_argument('--seed', type = int, default = 42)
