@@ -115,7 +115,7 @@ class UNetTrainer():
                 valid_iterator.set_description(
                     "Training (%d / %d Steps) (loss=%2.5f)" % (iter_count, max_iterations, loss.item())
                 )
-                pred = post_transform(pred)
+                pred = post_transform(image = pred)
                 dice_value, _ = dice_metric(y_pred = pred, y = label)
                 valid_loss.append(loss.item())
                 valid_dice.append(dice_value.item())
