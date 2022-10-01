@@ -40,6 +40,7 @@ def strong_aug(p=0.5):
 
 class MyDataset(Dataset):
     def __init__(self, path_list, transform = None):
+        print(transform)
         self.path_list = path_list
         self.transform = transform
 
@@ -50,7 +51,6 @@ class MyDataset(Dataset):
         label = torch.tensor(self.path_list[index]['label']).type(torch.uint8)
 
         if self.transform:
-            print(self.transform)
             print(type(image))
             print(image.shape)
             augmented = self.transform(image = image)
