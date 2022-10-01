@@ -77,7 +77,7 @@ def main():
         encoder_path = os.path.join(args.model_dir, 'clf/all', f"level_{args.level}/checkpoint.pt")
         model = smp.Unet(encoder_name = "timm-efficientnet-b0", encoder_weights = "noisy-student", in_channels = 3, classes = 2)
         model.encoder.load_state_dict(torch.load(encoder_path))
-        for param in model.encode.parameters():
+        for param in model.encoder.parameters():
             param.requires_grad = False
         criterion = monai.losses.DiceLoss(softmax = True, to_onehot_y = True, include_background = True)
     print(model)
