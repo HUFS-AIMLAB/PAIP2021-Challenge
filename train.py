@@ -78,7 +78,7 @@ def main():
         model = smp.Unet(encoder_name = "timm-efficientnet-b0", encoder_weights = "noisy-student", in_channels = 3, classes = 2)
         model.encoder.load_state_dict(torch.load(encoder_path))
         # criterion = monai.losses.DiceLoss(sigmoid = True, include_background = False)
-        criterion = monai.losses.DiceLoss(softmax = True, to_onehot = True, include_background = True)
+        criterion = monai.losses.DiceLoss(softmax = True, to_onehot_y = True, include_background = True)
     print(model)
     
     optimizer = torch.optim.Adam(model.parameters(), lr = args.lr)
