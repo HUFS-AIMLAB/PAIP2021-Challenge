@@ -1,13 +1,9 @@
 import os
-import time
-import random
 
 import cv2
 import numpy as np
-from tqdm import tqdm
 from pathlib import Path
 import scipy.ndimage
-import argparse
 
 import openslide
 import xml.etree.ElementTree as ET
@@ -18,30 +14,9 @@ CLASS_TUMOR = 13
 CLASS_BENIGN = 14
 
 
-def parse_args():
-    parser = argparse.ArgumentParser(description="Make Patches PAIP 2021 Patch Dataset")
-    parser.add_argument(
-        "--svs_load_dir", type=str, help="Challenge Whole Slide Images dir"
-    )
-    parser.add_argument("--xml_load_dir", type=str, help="Challenge Annotation dir")
-    parser.add_argument("--save_dir", type=str, help="Patch Save dir")
-    parser.add_argument("--psize", type=int, default=224, help="Patch Size")
-    parser.add_argument(
-        "--max_patches", type=int, default=2000, help="maximum patches for each class"
-    )
-    parser.add_argument("--seed", type=int, default=42)
-    parser.add_argument("--mode", type=str, help="random, sw: sliding window")
-    return parser.parse_args()
-
-
-def random_seed(seed):
-    np.random.seed(seed)
-    random.seed(seed)
-
-
 class Preprocessor:
-    def __init__(self, patch_save):
-        self.patch_save = patch_save
+    def __init__(self, args):
+        self.args = args
 
     def xml2mask(self, xml_fn, slide, level):
         """
@@ -122,7 +97,6 @@ class Preprocessor:
         return idx, y, x
 
     def make_patch(self, slide, mask, name, level):
-        global args
         max_x, max_y = slide.level_dimensions[level]
 
         idx_nerve, y_nerve, x_nerve = self.shuffle_coord(mask, CLASS_NERVE)
@@ -146,16 +120,16 @@ class Preprocessor:
                 label = "class3"
 
             cnt = 0
-            range_max = args.max_patches if len(idx) > args.max_patches else len(idx)
+            range_max = self.args.max_patches if len(idx) > self.args.max_patches else len(idx)
             for i in range(range_max):
-                x = coord_x[num][i] * (4 ** (level)) - (args.psize // 2) * (
+                x = coord_x[num][i] * (4 ** (level)) - (self.args.psize // 2) * (
                     4 ** (level)
                 )
-                y = coord_y[num][i] * (4 ** (level)) - (args.psize // 2) * (
+                y = coord_y[num][i] * (4 ** (level)) - (self.args.psize // 2) * (
                     4 ** (level)
                 )
                 img = np.array(
-                    slide.read_region((x, y), level, (args.psize, args.psize))
+                    slide.read_region((x, y), level, (self.args.psize, self.args.psize))
                 )
                 img = img[:, :, :3]
                 img = img.astype(np.uint8)
@@ -163,11 +137,11 @@ class Preprocessor:
 
                 mask_ = mask[
                     coord_y[num][i]
-                    - (args.psize // 2) : coord_y[num][i]
-                    + (args.psize // 2),
+                    - (self.args.psize // 2) : coord_y[num][i]
+                    + (self.args.psize // 2),
                     coord_x[num][i]
-                    - (args.psize // 2) : coord_x[num][i]
-                    + (args.psize // 2),
+                    - (self.args.psize // 2) : coord_x[num][i]
+                    + (self.args.psize // 2),
                     np.newaxis,
                 ]
                 mask_ = mask_.astype(np.uint8)
@@ -178,7 +152,7 @@ class Preprocessor:
                     os.path.join(
                         self.patch_save,
                         name,
-                        args.mode,
+                        self.args.mode,
                         "level_" + str(level),
                         f"{label}/img",
                         f"{name}_{num_form}.png",
@@ -188,7 +162,7 @@ class Preprocessor:
                     os.path.join(
                         self.patch_save,
                         name,
-                        args.mode,
+                        self.args.mode,
                         "level_" + str(level),
                         f"{label}/mask",
                         f"{name}_{num_form}.png",
@@ -211,9 +185,8 @@ class Preprocessor:
 
     # def sliding_window_extract(patch_save, paths, label, level):
     def make_patch_sw(self, slide, mask, name, level, target=1, stride=25, label="pni"):
-        global args
-        py = args.psize // 2
-        px = args.psize // 2
+        py = self.args.psize // 2
+        px = self.args.psize // 2
 
         m = np.where(mask == target, 1, 0)
         if len(m) == 0:
@@ -248,7 +221,7 @@ class Preprocessor:
                     slide.read_region(
                         ((x - px) * (4 ** (level)), (y - py) * (4 ** (level))),
                         level,
-                        (args.psize, args.psize),
+                        (self.args.psize, self.args.psize),
                     )
                 )
                 img = img[:, :, :3]
@@ -267,7 +240,7 @@ class Preprocessor:
                     os.path.join(
                         self.patch_save,
                         name,
-                        args.mode,
+                        self.args.mode,
                         "level_" + str(level),
                         label,
                         "img_sw",
@@ -278,7 +251,7 @@ class Preprocessor:
                     os.path.join(
                         self.patch_save,
                         name,
-                        args.mode,
+                        self.args.mode,
                         "level_" + str(level),
                         label,
                         "mask_sw",
@@ -296,36 +269,3 @@ class Preprocessor:
                     print(img.shape)
                     print(mask_.shape)
                     continue
-
-
-def main():
-    global args
-    wsi_dir = Path(args.svs_load_dir)
-    xml_dir = Path(args.xml_load_dir)
-    patch_save = Path(args.save_dir)
-    levels = [0, 1, 2]
-
-    svs_paths = sorted(wsi_dir.glob("*.svs"))
-    xml_paths = sorted(xml_dir.glob("*.xml"))
-    assert len(svs_paths) == len(xml_paths)
-
-    preprocessor = Preprocessor(patch_save)
-    paths = list(zip(svs_paths, xml_paths))
-    stime = time.time()
-
-    for (slide_path, xml_path) in tqdm(paths):
-        name = "_".join(xml_path.stem.split("_")[i] for i in (0, -1))
-        slide = openslide.OpenSlide(str(slide_path))
-        for level in levels:
-            mask = preprocessor.xml2mask(xml_path, slide, level)
-            if args.mode == "random":
-                preprocessor.make_patch(slide, mask, name, level)
-            else:
-                preprocessor.make_patch_sw(slide, mask, name, level)
-    print(f"* Time : {(time.time() - stime) / 60}min")
-
-
-if __name__ == "__main__":
-    args = parse_args()
-    random_seed(args.seed)
-    main()

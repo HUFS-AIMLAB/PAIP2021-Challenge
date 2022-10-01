@@ -63,7 +63,7 @@ class MyDataset(Dataset):
         return len(self.path_list)
 
 
-class TrainerEncoder():
+class EncoderTrainer():
     def __init__(self, args, model, optimizer, criterion, device):
         self.device = device
         self.model = model
@@ -120,7 +120,7 @@ class TrainerEncoder():
 
     def training(self):
         data_list = self.path_list()
-        train_list, valid_list = train_test_split(data_list, test_size = 0.1,shuffle=True)
+        train_list, valid_list = train_test_split(data_list, test_size = 0.1, shuffle=True)
         print(f"[INFO] train_list: {len(train_list)}, valid_list: {len(valid_list)}")
         
         albu_aug = strong_aug(p = 0.8)
@@ -138,10 +138,10 @@ class TrainerEncoder():
         validset = MyDataset(valid_list, transform = valid_aug)
 
         train_loader = DataLoader(
-            trainset,batch_size = args.batch_size, shuffle = True, 
+            trainset,batch_size = self,args.batch_size, shuffle = True, 
             num_workers = self.args.num_workers, pin_memory = True)
         valid_loader = DataLoader(
-            validset,batch_size = args.batch_size, shuffle = False, 
+            validset,batch_size = self.args.batch_size, shuffle = False, 
             num_workers = self.args.num_workers, pin_memory = True)
 
         self.model = self.model.to(self.device)
