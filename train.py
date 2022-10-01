@@ -43,6 +43,7 @@ def parse_args():
     parser.add_argument('--use_gpu', type = bool, default = True)
 
     parser.add_argument('--patience', type = int, default = 3, help = "Early Stop patience")
+    parser.add_argument('--random_sampling', type = bool, default = True)
     return parser.parse_args()
 
 

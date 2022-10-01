@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import random
 from PIL import Image
 from tqdm import tqdm
 from sklearn.model_selection import train_test_split
@@ -85,6 +86,8 @@ class EncoderTrainer():
                         if image.split('.')[-1] != 'png':
                             continue
                         else:
+                            if self.args.random_sampling and random.randint(0, 9) < 9:
+                                continue
                             case = {
                                 'image' : os.path.join(root_dir, patient, 'random', f"level_{level_dim}", label, "img", image),
                                 'label' : label_value[label]
