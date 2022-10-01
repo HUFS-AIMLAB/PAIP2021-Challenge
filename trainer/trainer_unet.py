@@ -105,18 +105,19 @@ class UNetTrainer():
         iter_count = 0
         correct = 0
         max_iterations = len(valid_loader)
-        for item in tqdm(valid_iterator):
-            iter_count += 1
-            image, label = item['image'].to(self.device), item['label'].type(torch.long).to(self.device)
-            pred = inferer(inputs = image, network = self.model)
-            loss = self.criterion(pred, label)
-            valid_iterator.set_description(
-                "Training (%d / %d Steps) (loss=%2.5f)" % (iter_count, max_iterations, loss.item())
-            )
-            pred = post_transform(pred)
-            dice_value, _ = dice_metric(y_pred = pred, y = label)
-            valid_loss.append(loss.item())
-            valid_dice.append(dice_value.item())
+        with torch.no_grad():
+            for item in tqdm(valid_iterator):
+                iter_count += 1
+                image, label = item['image'].to(self.device), item['label'].type(torch.long).to(self.device)
+                pred = inferer(inputs = image, network = self.model)
+                loss = self.criterion(pred, label)
+                valid_iterator.set_description(
+                    "Training (%d / %d Steps) (loss=%2.5f)" % (iter_count, max_iterations, loss.item())
+                )
+                pred = post_transform(pred)
+                dice_value, _ = dice_metric(y_pred = pred, y = label)
+                valid_loss.append(loss.item())
+                valid_dice.append(dice_value.item())
         valid_loss = np.average(valid_loss).item()
         valid_dice = np.average(valid_dice).item()
         return valid_loss, valid_dice
