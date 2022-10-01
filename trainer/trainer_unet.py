@@ -1,8 +1,7 @@
 import os
+import cv2
 import numpy as np
-from PIL import Image
 from tqdm import tqdm
-from sklearn.model_selection import train_test_split
 
 import torch
 import torch.nn.functional as F
@@ -39,23 +38,20 @@ def strong_aug(p=0.5):
 
 
 class MyDataset(Dataset):
-    def __init__(self, path_list, normalization, transform = None):
+    def __init__(self, path_list, transform = None):
         self.path_list = path_list
         self.transform = transform
 
     def __getitem__(self, index):
-        image = Image.open(self.path_list[index]['image'])
-        image = image.convert("RGB")
-        image = np.array(image)
-        label = torch.tensor(self.path_list[index]['label']).type(torch.uint8)
-
+        image = cv2.imread(self.path_list[index]['image'])
+        mask = cv2.imread(self.path_list[index]['mask'], cv2.IMREAD_GRAYSCALE)
+        
         if self.transform:
-            augmented = self.transform(image = image)
+            augmented = self.transform(image = image, mask = mask)
             image = augmented['image']
+            mask = augmented['mask'][np.newaxis, :, :]
 
-        data = {'image' : image, 'label' : label.item()}
-
-        return data
+        return image, mask
 
     def __len__(self):
         return len(self.path_list)
@@ -73,21 +69,21 @@ class Trainer():
         data_list = list()
         root_dir = self.args.root_dir
         level_dim = str(self.args.level)
-        label_value = {'class0': 0, 'class1': 1, 'class2': 2, 'class3': 3}
+        
         for patient in sorted(os.listdir(os.path.join(root_dir))):
             if patient.split('_')[0] not in ['Col', 'Pan', 'Pros']:
                 continue
             if self.args.train_type != 'all' and patient.split('_')[0] != self.args.train_type.title():
                 continue
-            for label in sorted(os.listdir(os.path.join(root_dir, patient, 'random', f" level_{level_dim}"))):
+            for label in sorted(os.listdir(os.path.join(root_dir, patient, 'sw', f" level_{level_dim}"))):
                 if 'class' in label:
-                    for image in sorted(os.listdir(os.path.join(root_dir, patient, 'random', f" level_{level_dim}", label, "img"))):
+                    for image in sorted(os.listdir(os.path.join(root_dir, patient, 'sw', f" level_{level_dim}", label, "img"))):
                         if image.split('.')[-1] != 'png':
                             continue
                         else:
                             case = {
-                                'image' : os.path.join(root_dir, patient, 'random', f" level_{level_dim}", label, "img", image),
-                                'label' : label_value[label]
+                                'image' : os.path.join(root_dir, patient, 'sw', f" level_{level_dim}", label, "img", image),
+                                'label' : os.path.join(root_dir, patient, 'sw', f" level_{level_dim}", label, "mask", image)
                             }
                             data_list.append(case)
                 
