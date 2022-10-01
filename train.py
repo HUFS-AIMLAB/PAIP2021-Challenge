@@ -74,8 +74,9 @@ def main():
         model = timm.create_model("tf_efficientnet_b0_ns", pretrained = True, num_classes = 4)
         criterion = torch.nn.CrossEntropyLoss()
     elif args.train_mode == 'seg':
-        # model = UNetEfficientNet(num_classes = 1, encoder_path = os.path.join(args.model_dir, 'clf/all', f"level_{args.level}/checkpoint.pt"))
+        encoder_path = os.path.join(args.model_dir, 'clf/all', f"level_{args.level}/checkpoint.pt")
         model = smp.Unet(encoder_name = "timm-efficientnet-b0", encoder_weights = "noisy-student", in_channels = 3, classes = 1)
+        model.encoder.load_state_dict(torch.load(encoder_path))
         criterion = monai.losses.DiceLoss(sigmoid = True)
     print(model)
     
