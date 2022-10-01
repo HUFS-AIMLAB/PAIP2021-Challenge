@@ -71,7 +71,7 @@ def main():
         model = EfficientNetB0(pre_trained = True, num_classes = 4)
         criterion = torch.nn.CrossEntropyLoss()
     elif args.train_mode == 'seg':
-        model = UNetEfficientNet(num_classes = 1, encoder_path = os.path.join(args.model_dir, 'clf/all', f"level_{args.level}/checkpoint.pt"))
+        model = UNetEfficientNet(num_classes = 1, encoder_path = os.path.join(args.model_dir, 'clf/all', f"level_{args.level}/checkpoint_l.pt"))
         criterion = monai.losses.DiceLoss(sigmoid = True)
     print(model)
     
