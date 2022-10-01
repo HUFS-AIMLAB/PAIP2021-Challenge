@@ -75,9 +75,10 @@ def main():
         criterion = torch.nn.CrossEntropyLoss()
     elif args.train_mode == 'seg':
         encoder_path = os.path.join(args.model_dir, 'clf/all', f"level_{args.level}/checkpoint.pt")
-        model = smp.Unet(encoder_name = "timm-efficientnet-b0", encoder_weights = "noisy-student", in_channels = 3, classes = 1)
+        model = smp.Unet(encoder_name = "timm-efficientnet-b0", encoder_weights = "noisy-student", in_channels = 3, classes = 2)
         model.encoder.load_state_dict(torch.load(encoder_path))
-        criterion = monai.losses.DiceLoss(sigmoid = True, include_background = False)
+        # criterion = monai.losses.DiceLoss(sigmoid = True, include_background = False)
+        criterion = monai.losses.DiceLoss(softmax = True, to_onehot = True, include_background = True)
     print(model)
     
     optimizer = torch.optim.Adam(model.parameters(), lr = args.lr)
