@@ -96,7 +96,7 @@ class UNetTrainer():
         return data_list
 
 
-    def validation(self, valid_loader, dice_metric, post_transform, inferer):
+    def validation(self, valid_loader, dice_metric, activate, discrete, inferer):
         self.model.eval()
         valid_iterator = tqdm(
         valid_loader, desc="VALIDATION (X / X Steps) (loss=X.X)", dynamic_ncols=True
@@ -115,7 +115,9 @@ class UNetTrainer():
                 valid_iterator.set_description(
                     "Training (%d / %d Steps) (loss=%2.5f)" % (iter_count, max_iterations, loss.item())
                 )
-                pred = post_transform(image = pred)
+                # pred = post_transform(image = pred)
+                pred = activate(pred)
+                pred = discrete(pred)
                 dice_value, _ = dice_metric(y_pred = pred, y = label)
                 valid_loss.append(loss.item())
                 valid_dice.append(dice_value.item())
@@ -153,7 +155,9 @@ class UNetTrainer():
         self.model = self.model.to(self.device)
 
         dice_metric = monai.metrics.DiceMetric(include_background = True, reduction = 'mean')
-        post_transform = monai.transforms.Compose([monai.transforms.Activations(sigmoid = True), monai.transforms.AsDiscrete(threshold = 0.5)])
+        # post_transform = monai.transforms.Compose([monai.transforms.Activations(sigmoid = True), monai.transforms.AsDiscrete(threshold = 0.5)])
+        activate = monai.transforms.Activations(sigmoid = True)
+        discrete = monai.transforms.AsDiscrete(threshold = 0.5)
         inferer = monai.inferers.SimpleInferer()
         
         print(f"[INFO] training start")
@@ -182,7 +186,7 @@ class UNetTrainer():
                 train_loss.append(loss.item())
                 
             train_loss = np.average(train_loss).item()
-            valid_loss, valid_dice = self.validation(valid_loader, dice_metric, post_transform, inferer)
+            valid_loss, valid_dice = self.validation(valid_loader, dice_metric, activate, discrete, inferer)
 
             print(f"Epoch: {epoch} | Train Loss: {train_loss:.3f}")
             print(f"Epoch: {epoch} | Valid Loss: {valid_loss:.3f}, Valid Dice Score: {valid_dice:.3f}")
