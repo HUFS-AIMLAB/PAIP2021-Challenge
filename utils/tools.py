@@ -3,6 +3,7 @@ import numpy as np
 from pathlib import Path
 import torch
 
+
 class EarlyStopping:
     def __init__(self, args, verbose=False, delta=0):
         self.args = args
@@ -21,7 +22,7 @@ class EarlyStopping:
             self.save_checkpoint(val_loss, model)
         elif score < self.best_score + self.delta:
             self.counter += 1
-            print(f'EarlyStopping counter: {self.counter} out of {self.patience}')
+            print(f"EarlyStopping counter: {self.counter} out of {self.patience}")
             if self.counter >= self.patience:
                 self.early_stop = True
         else:
@@ -31,9 +32,19 @@ class EarlyStopping:
 
     def save_checkpoint(self, val_loss, model):
         if self.verbose:
-            print(f'Validation loss decreased ({self.val_loss_min:.6f} --> {val_loss:.6f}).  Saving model ...')
-        ppath = Path(os.path.join(self.args.model_dir, self.args.train_mode, self.args.train_type, f"level_{self.args.level}", "checkpoint.pt"))
-        ppath.parent.mkdir(parents = True, exist_ok = True)
+            print(
+                f"Validation loss decreased ({self.val_loss_min:.6f} --> {val_loss:.6f}).  Saving model ..."
+            )
+        ppath = Path(
+            os.path.join(
+                self.args.model_dir,
+                self.args.train_mode,
+                self.args.train_type,
+                f"level_{self.args.level}",
+                "checkpoint.pt",
+            )
+        )
+        ppath.parent.mkdir(parents=True, exist_ok=True)
 
         torch.save(model.state_dict(), str(ppath))
         self.val_loss_min = val_loss

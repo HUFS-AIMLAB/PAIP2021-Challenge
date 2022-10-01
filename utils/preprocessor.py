@@ -120,7 +120,9 @@ class Preprocessor:
                 label = "class3"
 
             cnt = 0
-            range_max = self.args.max_patches if len(idx) > self.args.max_patches else len(idx)
+            range_max = (
+                self.args.max_patches if len(idx) > self.args.max_patches else len(idx)
+            )
             for i in range(range_max):
                 x = coord_x[num][i] * (4 ** (level)) - (self.args.psize // 2) * (
                     4 ** (level)

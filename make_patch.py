@@ -13,6 +13,7 @@ def random_seed(seed):
     np.random.seed(seed)
     random.seed(seed)
 
+
 def parse_args():
     parser = argparse.ArgumentParser(description="Make Patches PAIP 2021 Patch Dataset")
     parser.add_argument(
