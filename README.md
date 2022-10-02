@@ -6,11 +6,11 @@
 
 3rd place solution to [PAIP 2021 Challenge endorsed MICCAI: Perineural Invasion in Multiple Organ Cancer](https://paip2021.grand-challenge.org/Home/)
 
-[[PDF]](https://drive.google.com/file/d/16gWjI5cbwn7zI9Rov7oyPETr_fYU101Q/view?usp=sharing) [[Article]](http://www.hufsnews.co.kr/news/articleView.html?idxno=21998) [[Final Rank]](https://paip2021.grand-challenge.org/Final-rank/)
+[[PDF]](https://drive.google.com/file/d/16gWjI5cbwn7zI9Rov7oyPETr_fYU101Q/view?usp=sharing) [[PPTX]](https://docs.google.com/presentation/d/19LwYwQa4Cpx6oBll6T8KfT2VbQGoM62x/edit?usp=sharing&ouid=100584904410114143200&rtpof=true&sd=true) [[Brochure]](https://drive.google.com/file/d/12ECAQNrT7WPQU6CQzaHFn8mmsN4fNWGk/view) [[Article]](http://www.hufsnews.co.kr/news/articleView.html?idxno=21998) [[Final Rank]](https://paip2021.grand-challenge.org/Final-rank/)
 
 In this work, we propose an organ-specific method to detect perineural invasion (PNI) in multiple organ cancer. The proposed method consists of a classification step and a segmentation step. In the classification step, PNI is detected at the patch level using the organ-specifically trained convolutional neural network. In the segmentation step, PNI is finally delineated at the pixel level on the result of the previous step. In particular, the weights pretrained in classification step were utilized in segmentation step. The results show that our method will be helpful for effectively detecting PNI in multiple organ cancer.
 
-Team Members:
+Team Members:  
 **Dayoung Baik, Seungun Jang, Hwanseung Yoo, Gawon Lee, Junhyeok Lee**
 
 <p align="center">
