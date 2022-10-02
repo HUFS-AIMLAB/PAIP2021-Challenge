@@ -104,6 +104,12 @@ python make_probamap.py --root_dir <WSI directory> --result_dir <model_path & re
 python make_final_result.py --root_dir <WSI directory> --result_dir <model_path & result directory> ..
 ```
 
+## License
+This repository is licensed under the MIT License
+
+## Contact
+If you have any questions, feel free to contact Hwanseung Yoo through Email (wazs555@hufs.ac.kr) or Github issues
+
 
 
 
