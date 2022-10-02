@@ -13,7 +13,13 @@ In this work, we propose an organ-specific method to detect perineural invasion 
 Team Members:
 **Dayoung Baik, Seungun Jang, Hwanseung Yoo, Gawon Lee, Junhyeok Lee**
 
-
+<p align="center">
+<img src="./img/probmap.png" height = "360" alt="" align=center />
+<br><br>
+<b>Figure 2</b> Two regions of interests with ground truth label (blue pixels) and PNI probability map from our model 
+</p>
+<p>
+</p>  
 <p align="center">
 <img src="./img/result.png" height = "240" alt="" align=center />
 <br><br>
