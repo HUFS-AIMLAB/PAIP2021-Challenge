@@ -1,7 +1,10 @@
 # PAIP 2021 Challenge endorsed MICCAI: Perineural Invasion in Multiple Organ Cancer
-![Python 3.8](https://img.shields.io/badge/python-3.8-green.svg?style=plastic)
-![PyTorch 1.10](https://img.shields.io/badge/PyTorch%20-%23EE4C2C.svg?style=plastic)
-![OpenSlide 1.10](https://img.shields.io/badge/OpenSlide%20-%23EE4C2C.svg?style=plastic)
+
+<img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=Docker&logoColor=white">
+<img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=Python&logoColor=white">
+<img src="https://img.shields.io/badge/Pytorch-EE4C2C?style=flat-square&logo=Pytorch&logoColor=white">
+<img src="https://img.shields.io/badge/Numpy-013243?style=flat-square&logo=Numpy&logoColor=white">
+
 
 
 3rd place solution to [PAIP 2021 Challenge endorsed MICCAI: Perineural Invasion in Multiple Organ Cancer](https://paip2021.grand-challenge.org/Home/)
