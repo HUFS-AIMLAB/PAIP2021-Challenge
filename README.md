@@ -23,12 +23,12 @@ Team Members:
 
 
 ## 🎯 Aims
----
+
 PAIP 2021 challenge aims to promote the development of a common algorithm for automatic detection of perineural invasion in resected specimens of multi-organ cancers. PAIP 2021 challenge will have a technical impact in the following fields: detection of composite targets (nerve and tumor) and common modeling for target images in multiple backgrounds. This challenge will provide a good opportunity to overcome the limitations of current disease-organ-specific modeling and develop a technological approach to the universality of histology in multiple organs.
 
 
 ## ✔️ Datasets
----
+
 
 - Data characteristics
 Original scanned images in SVS format will be provided for Training, Validation and Test data. The number of datasets are as below.  
