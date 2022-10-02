@@ -73,4 +73,40 @@ Original scanned images in SVS format will be provided for Training, Validation 
   
 ## 🚩 Get Started
 
+### Docker build
+```bash
+cd PAIP2021-Challenge
+docker build -t paip2021 .
+
+docker run -d -it --gpus all --shm-size=8G -v <mount path> -v <mound path> --name paip2021 paip2021 bash
+docker exec -it paip2021 bash
+```
+
+### Make patch
+```bash
+python make_patch.py --svs_load_dir <WSI directory> --xml_load_dir <annotation directory> --save_dir <patch save directory> --mode random
+
+python make_patch.py --svs_load_dir <WSI directory> --xml_load_dir <annotation directory> --save_dir <patch save directory> --mode sw
+```
+
+### Training Encoder & UNet
+```bash
+python train.py --root_dir <patch save directory> --model_dir <model save directory> --train_mode <clf, seg> --train_type <all, col, pan, pros> ..
+```
+
+### Probability Map
+```bash
+python make_probamap.py --root_dir <WSI directory> --result_dir <model_path & result directory> ...
+```
+
+### Final Segmentation Map
+```bash
+python make_final_result.py --root_dir <WSI directory> --result_dir <model_path & result directory> ..
+```
+
+
+
+
+
+
 
